@@ -9,7 +9,15 @@ boolean NewDataNotDealtWith = false;
 
 int count;
 unsigned long CurrentMillis;
-int DelayInterval = 450;
+unsigned long PreviousStepperMillis;
+
+byte FastStepperInterval = 1;
+byte SlowStepperInterval = 10; 
+byte StepperInterval = 1;
+
+boolean ForwardRotationFlag = false;
+boolean BackwardRotationFlag = false;
+
 
 
 void setup() {
@@ -23,9 +31,11 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
+  CurrentMillis = millis();
   ReceiveCharsWithStartAndEndMarkers();
   Decoder();
-  CurrentMillis = millis();
+  ForwardRotationFunction();
+  BackwardRotationFunction();
 
 
 
@@ -86,9 +96,21 @@ void Decoder(){
       Serial.print("<Readback>");
       
     }
-    else if(){
+    else if(ReceivedString == "Forward"){
 
+      ForwardRotationFlag = true;
       
+    }
+    else if(ReceivedString == "Backward"){
+
+      BackwardRotationFlag = true;
+      
+    }
+
+    else if(ReceivedString == "Stop"){
+
+      ForwardRotationFlag = false;
+      BackwardRotationFlag = false;
     }
    
 
@@ -97,5 +119,49 @@ void Decoder(){
   }
 
 
+  
+}
+
+void ForwardRotationFunction(){
+
+  static boolean Status = LOW;
+  if(CurrentMillis - PreviousStepperMillis >= StepperInterval && ForwardRotationFlag == true){
+     
+     digitalWrite(DirPin, HIGH);
+     if(Status == LOW){
+      digitalWrite(StepPin, HIGH);
+      Status = HIGH;
+     }
+     else if(Status == HIGH){
+      digitalWrite(StepPin, LOW);
+      Status = LOW;
+     }
+     
+  PreviousStepperMillis = CurrentMillis;
+
+  }
+  
+  
+}
+
+void BackwardRotationFunction(){
+
+  static boolean Status = LOW;
+  if(CurrentMillis - PreviousStepperMillis >= StepperInterval && BackwardRotationFlag == true){
+     
+     digitalWrite(DirPin, LOW);
+     if(Status == LOW){
+      digitalWrite(StepPin, HIGH);
+      Status = HIGH;
+     }
+     else if(Status == HIGH){
+      digitalWrite(StepPin, LOW);
+      Status = LOW;
+     }
+     
+  PreviousStepperMillis = CurrentMillis;
+
+  }
+  
   
 }

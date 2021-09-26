@@ -2,6 +2,7 @@ const int StepPin = 6;
 const int DirPin = 7;
 int count;
 int DelayIntervalMicroseconds = 1000;
+int DelayIntervalMilliseconds = 10;
 
 void setup() {
   // put your setup code here, to run once:  
@@ -42,9 +43,15 @@ void loop() {
     delayMicroseconds(DelayIntervalMicroseconds);
   }
   */
+  /*
     digitalWrite(StepPin, LOW);
     delayMicroseconds(DelayIntervalMicroseconds);
     digitalWrite(StepPin, HIGH);
     delayMicroseconds(DelayIntervalMicroseconds);
+    */
+    digitalWrite(StepPin, LOW);
+    delay(DelayIntervalMilliseconds);
+    digitalWrite(StepPin, HIGH);
+    delay(DelayIntervalMilliseconds);
  
 }

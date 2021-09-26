@@ -95,6 +95,13 @@ class Mainwindow:
           
             root.grid_rowconfigure(y, weight = 1)
 
+        master.bind("<Up>",self.UpOnPress)
+        master.bind("<KeyRelease-Up>",self.UpOnRelease)
+
+        master.bind("<Down>",self.DownOnPress)
+        master.bind("<KeyRelease-Down>",self.DownOnRelease)
+
+
         self.ConnectToArduino()
     
     def ConnectToArduino(self):
@@ -107,14 +114,25 @@ class Mainwindow:
 
         print("Connected to Arduino")
 
-    def UpOnPress(self):
-        pass
-    def UpOnRelease(self):
-        pass
-    def DownOnPress(self):
-        pass
-    def DownOnRelease(self):
-        pass
+    def UpOnPress(self, event):
+        
+        SC.ser.write("<Forward>".encode())
+        print("Up Pressed")
+
+    def UpOnRelease(self, event):
+
+        print("Up Released")
+        SC.ser.write("<Stop>".encode())
+
+    def DownOnPress(self, event):
+        
+        SC.ser.write("<Backward>".encode())
+        print("Down Pressed")
+
+    def DownOnRelease(self, event):
+        
+        print("Down Released")
+        SC.ser.write("<Stop>".encode())
 
 
     
