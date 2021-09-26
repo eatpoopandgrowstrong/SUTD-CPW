@@ -15,23 +15,91 @@ class Mainwindow:
         '''
         Throw all startup and connections here, for now 
         '''
+        SC.StartMarker = '<'
+        SC.EndMarker = '>'
 
         root.grid()
+        
+
+        self.SpeedVar = tk.IntVar()
+        self.SpeedVar.set(1)
+
+        #master.bind("<Up>", self.up_on_press)
+
 
         self.TestButton = tk.Button(
 
             master, 
             text = "Spin 1 round",
-            command = lambda: print("Hello World")
+            command = lambda: print(self.SpeedVar.get())
 
         )
 
-        self.TestButton.grid(column = 1, row = 1)
+        self.Level1Button = tk.Button(
 
-        print("UI created")
+            master,
+            text = "Level 1",
+            command = lambda: print("Level 1 Selected")
 
-    def ConnectToArduino():
+        )
 
+        self.Level2Button = tk.Button(
+
+            master,
+            text = "Level 2",
+            command = lambda: print("Level 2 Selected")
+
+        )
+
+        self.Level3Button = tk.Button(
+
+            master,
+            text = "Level 3",
+            command = lambda: print("Level 3 Selected")
+
+        )
+
+        self.Speed1RadioButton = tk.Radiobutton(
+
+            master,
+            text = "Speed 1",
+            variable = self.SpeedVar,
+            value = 1
+
+        )
+
+        self.Speed2RadioButton = tk.Radiobutton(
+
+            master,
+            text = "Speed 2",
+            variable = self.SpeedVar,
+            value = 2
+
+        )
+
+
+        self.Level3Button.grid(column = 0, row = 0)
+        self.Level2Button.grid(column = 0, row = 1)
+        self.Level1Button.grid(column = 0, row = 2)
+
+        self.Speed1RadioButton.grid(column = 2, row = 0)
+        self.Speed2RadioButton.grid(column = 2, row = 1)
+
+        self.TestButton.grid(column = 4, row = 0)
+
+        for x in range(4):
+           
+            root.grid_columnconfigure(x, weight = 1)
+
+        for y in range(2):
+          
+            root.grid_rowconfigure(y, weight = 1)
+
+        self.ConnectToArduino()
+    
+    def ConnectToArduino(self):
+
+        print("Stage 2")
         ArduinoPortsList = SC.ListArduinoConnectedPorts()
         SC.ConnectToArduino(ArduinoPortsList, 115200, 0.01)
         SC.WaitForArduino()
@@ -39,10 +107,18 @@ class Mainwindow:
 
         print("Connected to Arduino")
 
+    def UpOnPress(self):
+        pass
+    def UpOnRelease(self):
+        pass
+    def DownOnPress(self):
+        pass
+    def DownOnRelease(self):
+        pass
 
-    '''
+
     
-    '''
+
 
 if __name__ == "__main__":
 
