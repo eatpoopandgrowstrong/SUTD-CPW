@@ -12,12 +12,24 @@ unsigned long CurrentMillis;
 unsigned long PreviousStepperMillis;
 
 byte FastStepperInterval = 1;
-byte SlowStepperInterval = 10; 
+byte SlowStepperInterval = 3; 
 byte StepperInterval = 1;
 
 boolean ForwardRotationFlag = false;
 boolean BackwardRotationFlag = false;
 
+byte CurrentLevel = 1;
+byte SelectedLevel = 0;
+boolean LevelSelectionFlag = false;
+
+
+const int StepsBetween1and2 = 220;
+const int StepsBetween2and3 = 450; 
+
+boolean UpwardsMovementFlag = false;
+boolean DownwardsMovementFlag = false;
+
+int StepperCount;
 
 
 void setup() {
@@ -36,6 +48,9 @@ void loop() {
   Decoder();
   ForwardRotationFunction();
   BackwardRotationFunction();
+  LevelCalculator();
+  UpwardsMovement();
+  DownwardsMovement();
 
 
 
@@ -112,7 +127,40 @@ void Decoder(){
       ForwardRotationFlag = false;
       BackwardRotationFlag = false;
     }
-   
+
+    else if(ReceivedString == "Fast"){
+
+      StepperInterval = FastStepperInterval;  
+    
+    }
+
+   else if(ReceivedString == "Slow"){
+
+      StepperInterval = SlowStepperInterval;
+    
+   }
+
+   else if(ReceivedString == "Level1"){
+
+      SelectedLevel = 1;
+      LevelSelectionFlag = true;
+
+   }
+
+   else if(ReceivedString == "Level2"){
+
+      SelectedLevel = 2;
+      LevelSelectionFlag = true;
+
+   }
+
+   else if(ReceivedString == "Level3"){
+
+      SelectedLevel = 3;
+      LevelSelectionFlag = true;
+
+   }
+
 
     NewData = false;
     
@@ -127,7 +175,7 @@ void ForwardRotationFunction(){
   static boolean Status = LOW;
   if(CurrentMillis - PreviousStepperMillis >= StepperInterval && ForwardRotationFlag == true){
      
-     digitalWrite(DirPin, HIGH);
+     digitalWrite(DirPin, LOW);
      if(Status == LOW){
       digitalWrite(StepPin, HIGH);
       Status = HIGH;
@@ -149,7 +197,7 @@ void BackwardRotationFunction(){
   static boolean Status = LOW;
   if(CurrentMillis - PreviousStepperMillis >= StepperInterval && BackwardRotationFlag == true){
      
-     digitalWrite(DirPin, LOW);
+     digitalWrite(DirPin, HIGH);
      if(Status == LOW){
       digitalWrite(StepPin, HIGH);
       Status = HIGH;
@@ -165,3 +213,150 @@ void BackwardRotationFunction(){
   
   
 }
+
+
+void LevelCalculator(){
+
+  /*
+  Question is how to lay this out, if 1, move X amount of steps to that location?
+  Start with from Level 1?
+  */
+  /*
+   * 
+   *  This function is a piece of garbage
+   */
+  if(LevelSelectionFlag == true){
+
+    if(CurrentLevel != SelectedLevel){
+
+      if(CurrentLevel == 1 && SelectedLevel == 2){
+
+        StepperCount = StepsBetween1and2;
+        UpwardsMovementFlag = true;
+        
+        
+      }
+
+      else if(CurrentLevel == 1 && SelectedLevel == 3){
+
+        StepperCount = StepsBetween1and2 + StepsBetween2and3;
+        UpwardsMovementFlag = true;
+        
+      }
+
+      else if(CurrentLevel == 2 && SelectedLevel == 1){
+
+        StepperCount = StepsBetween1and2;
+        DownwardsMovementFlag = true;
+        
+      }
+
+      else if(CurrentLevel == 2 && SelectedLevel == 3){
+
+        StepperCount = StepsBetween2and3;
+        UpwardsMovementFlag = true;
+        
+      }
+
+      else if(CurrentLevel == 3 && SelectedLevel == 1){
+
+        StepperCount = StepsBetween1and2 + StepsBetween2and3;
+        DownwardsMovementFlag = true;
+        
+      }
+
+      else if(CurrentLevel == 3 && SelectedLevel == 2){
+
+        StepperCount = StepsBetween2and3;
+        DownwardsMovementFlag = true;
+        
+      }
+      
+    } 
+
+  LevelSelectionFlag = false;
+
+  }
+  
+
+} 
+
+void UpwardsMovement(){
+
+  static boolean Status = LOW;
+  static int count;
+
+  if(CurrentMillis - PreviousStepperMillis >= StepperInterval && UpwardsMovementFlag == true){
+
+    if (count < StepperCount) {
+
+      digitalWrite(DirPin, LOW);
+      if (Status == LOW) {
+
+        digitalWrite(StepPin, HIGH);
+        Status = HIGH;
+
+      }
+      else if (Status == HIGH) {
+
+        digitalWrite(StepPin, LOW);
+        Status = LOW;
+        count++;
+
+      }
+
+
+    }
+    else if (count == StepperCount) {
+      count = 0;
+      UpwardsMovementFlag = false;
+      CurrentLevel = SelectedLevel;
+     
+
+    }
+  PreviousStepperMillis = CurrentMillis;
+  }
+  
+}
+
+void DownwardsMovement(){
+  
+  static boolean Status = LOW;
+  static int count;
+
+  if(CurrentMillis - PreviousStepperMillis >= StepperInterval && DownwardsMovementFlag == true){
+
+    if (count < StepperCount) {
+
+      digitalWrite(DirPin, HIGH);
+      if (Status == LOW) {
+
+        digitalWrite(StepPin, HIGH);
+        Status = HIGH;
+
+      }
+      else if (Status == HIGH) {
+
+        digitalWrite(StepPin, LOW);
+        Status = LOW;
+        count++;
+
+      }
+
+
+    }
+    else if (count == StepperCount) {
+      count = 0;
+      DownwardsMovementFlag = false;
+      CurrentLevel = SelectedLevel;
+      
+
+    }
+  PreviousStepperMillis = CurrentMillis;
+  }
+
+}
+
+
+
+ 

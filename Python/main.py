@@ -39,7 +39,8 @@ class Mainwindow:
 
             master,
             text = "Level 1",
-            command = lambda: print("Level 1 Selected")
+            #command = lambda: print("Level 1 Selected")
+            command = lambda: SC.ser.write("<Level1>".encode())
 
         )
 
@@ -47,7 +48,8 @@ class Mainwindow:
 
             master,
             text = "Level 2",
-            command = lambda: print("Level 2 Selected")
+            #command = lambda: print("Level 2 Selected")
+            command = lambda: SC.ser.write("<Level2>".encode())
 
         )
 
@@ -55,7 +57,8 @@ class Mainwindow:
 
             master,
             text = "Level 3",
-            command = lambda: print("Level 3 Selected")
+            #   command = lambda: print("Level 3 Selected")
+            command = lambda: SC.ser.write("<Level3>".encode())
 
         )
 
@@ -64,8 +67,9 @@ class Mainwindow:
             master,
             text = "Speed 1",
             variable = self.SpeedVar,
-            value = 1
-
+            value = 1,
+            #command = lambda: print("1 pressed")
+            command = lambda: SC.ser.write("<Fast>".encode())
         )
 
         self.Speed2RadioButton = tk.Radiobutton(
@@ -73,8 +77,9 @@ class Mainwindow:
             master,
             text = "Speed 2",
             variable = self.SpeedVar,
-            value = 2
-
+            value = 2,
+            #command = lambda: print("2 pressed")
+            command = lambda: SC.ser.write("<Slow>".encode())
         )
 
 
@@ -133,11 +138,15 @@ class Mainwindow:
         
         print("Down Released")
         SC.ser.write("<Stop>".encode())
+    '''
+    def SelectFast(self):
 
+        SC.ser.write("<Fast>")
 
-    
+    def SelectSlow(self):
 
-
+        pass
+    '''
 if __name__ == "__main__":
 
     ctypes.windll.shcore.SetProcessDpiAwareness(1)      # For High DPI
