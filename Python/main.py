@@ -138,15 +138,7 @@ class Mainwindow:
         
         print("Down Released")
         SC.ser.write("<Stop>".encode())
-    '''
-    def SelectFast(self):
 
-        SC.ser.write("<Fast>")
-
-    def SelectSlow(self):
-
-        pass
-    '''
 if __name__ == "__main__":
 
     ctypes.windll.shcore.SetProcessDpiAwareness(1)      # For High DPI
